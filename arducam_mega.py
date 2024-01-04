@@ -165,8 +165,8 @@ class MEGA_PIXELFORMAT:
 
 class arducam_mega:
     class mega_info:
-        def __init__(self, s_resoultion, s_special_effects, exposure_max, exposure_min, gain_max, gain_min, e_focus,e_sharpness,device_addr) -> None:
-            self.s_resoultion = s_resoultion
+        def __init__(self, s_resolution, s_special_effects, exposure_max, exposure_min, gain_max, gain_min, e_focus,e_sharpness,device_addr) -> None:
+            self.s_resolution = s_resolution
             self.s_special_effects = s_special_effects
             self.exposure_max = exposure_max
             self.exposure_min = exposure_min
@@ -176,7 +176,7 @@ class arducam_mega:
             self.e_sharpness = e_sharpness
             self.device_addr = device_addr
             
-    support_resoultion = [
+    support_resolution = [
         MEGA_RESOLUTION._96X96,
         MEGA_RESOLUTION._128X128,
         MEGA_RESOLUTION.QVGA,
@@ -193,7 +193,7 @@ class arducam_mega:
         self.nss = Pin(nss, Pin.OUT, value=1)
         self.camera_id = 0x0
         self.current_pixelfmt = MEGA_PIXELFORMAT.NONE
-        self.current_resoultion = MEGA_RESOLUTION.NONE
+        self.current_resolution = MEGA_RESOLUTION.NONE
         self.camera_info = None
     def reg_write(self, reg: int, val: int):
         try: 
@@ -228,11 +228,11 @@ class arducam_mega:
         self.camera_id = self.reg_read(MEGA_COMMON.CAM_REG_SENSOR_ID)
         print("detect camera id: ",self.camera_id)
         if self.camera_id == MEGA_CAEMRA._3MP_1 or self.camera_id == MEGA_CAEMRA._3MP_2:
-            self.support_resoultion[8] = MEGA_RESOLUTION.QXGA
-            self.camera_info = self.mega_info(s_resoultion=7638,s_special_effects=319,exposure_max=30000,exposure_min=1,gain_max=1023,gain_min=1,e_focus=0,e_sharpness=1,device_addr=0x78)
+            self.support_resolution[8] = MEGA_RESOLUTION.QXGA
+            self.camera_info = self.mega_info(s_resolution=7638,s_special_effects=319,exposure_max=30000,exposure_min=1,gain_max=1023,gain_min=1,e_focus=0,e_sharpness=1,device_addr=0x78)
         elif self.camera_id == MEGA_CAEMRA._5MP_1 or self.camera_id == MEGA_CAEMRA._5MP_2:
-            self.support_resoultion[8] = MEGA_RESOLUTION.WQXGA2
-            self.camera_info = self.mega_info(s_resoultion=7894,s_special_effects=63,exposure_max=30000,exposure_min=1,gain_max=1023,gain_min=1,e_focus=1,e_sharpness=0,device_addr=0x78)
+            self.support_resolution[8] = MEGA_RESOLUTION.WQXGA2
+            self.camera_info = self.mega_info(s_resolution=7894,s_special_effects=63,exposure_max=30000,exposure_min=1,gain_max=1023,gain_min=1,e_focus=1,e_sharpness=0,device_addr=0x78)
         else:
             print("No camera found!")
             return -1
@@ -394,7 +394,7 @@ class arducam_mega:
             self.reg_write(MEGA_COMMON.CAM_REG_POWER_CONTROL,0x05)
     
     def set_fmt(self, pixefmt, resolution):
-        if pixefmt == self.current_pixelfmt and resolution == self.current_resoultion:
+        if pixefmt == self.current_pixelfmt and resolution == self.current_resolution:
             return 0
         
         if pixefmt in [0x00, 0x01, 0x02]:
@@ -402,7 +402,7 @@ class arducam_mega:
         else:
             return -1
         
-        if resolution in self.support_resoultion:
+        if resolution in self.support_resolution:
             ret |= self.set_resolution(resolution)
         else:
             return -1

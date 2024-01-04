@@ -1,4 +1,3 @@
-    
 from machine import UART, Pin
 
 from arducam_mega import *
@@ -119,10 +118,12 @@ class arducam_link:
         elif self.CAM.camera_id == MEGA_CAEMRA._5MP_2:
             mega_name = '5MP_2'
         else:
+            print("No camera found!", self.CAM.camera_id)
             return 
+
         str_buf = "ReportCameraInfo\r\nCamera Type: {}\r\nCamera Support Resolution: {}\r\nCamera Support specialeffects: {}\r\nCamera Support Focus: {}\r\nCamera Exposure Value Max: {}\r\nCamera Exposure Value Min: {}\r\nCamera Gain Value Max: {}\r\nCamera Gain Value Min: {}\r\nCamera Support Sharpness: {}".format(
             mega_name,
-            self.CAM.camera_info.s_resoultion,
+            self.CAM.camera_info.s_resolution,
             self.CAM.camera_info.s_special_effects,
             self.CAM.camera_info.e_focus,
             self.CAM.camera_info.exposure_max,
@@ -178,7 +179,6 @@ class arducam_link:
     def run(self):
         if self.uart.any():
             recv_buf = bytearray(self.uart.read())
-            # print(recv_buf)
             for item in recv_buf:
                 if self.recv_state == 0x00:
                     if item == 0x55:
@@ -201,5 +201,7 @@ class arducam_link:
          
 if __name__ == "__main__":
     Link = arducam_link(17)
+    print("Hello,Arducam mega!")
+    Link.send("Hello,Arducam mega!")
     while 1:
         Link.run()
